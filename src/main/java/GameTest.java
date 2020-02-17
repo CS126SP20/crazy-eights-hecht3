@@ -1,6 +1,7 @@
 import org.junit.Before;
 import org.junit.Test;
 import student.crazyeights.Card;
+import student.crazyeights.PlayerStrategy;
 import student.crazyeights.PlayerTurn;
 
 import java.util.*;
@@ -94,6 +95,13 @@ public class GameTest {
   }
 
   @Test
+  public void isValidMoveTestTrueEight() {
+    game.draw.set(0, new Card(Card.Suit.DIAMONDS, Card.Rank.ACE));
+    game.setPlayer1CardsInHand(Arrays.asList(new Card(Card.Suit.SPADES, Card.Rank.EIGHT)));
+    assertTrue(game.isValidMove(game.getPlayer1CardsInHand().get(0), game.getPlayerList().get(0)));
+  }
+
+  @Test
   public void isValidMoveTestFalse() {
     assertFalse(game.isValidMove(game.getPlayer2CardsInHand().get(0), game.getPlayerList().get(0)));
   }
@@ -101,17 +109,40 @@ public class GameTest {
   @Test
   public void checkEndOfGameEmptyDraw() {
     game.draw.clear();
-    assertTrue(game.checkEndOfGame());
+    game.checkEndOfGame();
+    assertTrue(game.isEndOfGame);
   }
 
   @Test
   public void checkEndOfGameEmptyHand() {
     game.clearPlayer1CardsInHand();
-    assertTrue(game.checkEndOfGame());
+    game.checkEndOfGame();
+    assertTrue(game.isEndOfGame);
   }
 
   @Test
   public void checkEndOfGameFalse() {
-    assertFalse(game.checkEndOfGame());
+    assertFalse(game.isEndOfGame);
+  }
+
+  @Test
+  public void checkCalculateScoreEmptyDraw() {
+    game.draw.clear();
+    game.setPlayer1CardsInHand(Arrays.asList(new Card(Card.Suit.DIAMONDS, Card.Rank.ACE)));
+    game.setPlayer2CardsInHand(Arrays.asList(new Card(Card.Suit.SPADES, Card.Rank.ACE)));
+    game.setPlayer3CardsInHand(Arrays.asList(new Card(Card.Suit.CLUBS, Card.Rank.ACE)));
+    game.setPlayer4CardsInHand(Arrays.asList(new Card(Card.Suit.HEARTS, Card.Rank.ACE)));
+    game.calculateScore(null);
+    assertEquals(3, game.getPlayer1Score());
+  }
+
+  @Test
+  public void checkCalculateScoreEmptyPlayer1Hand() {
+    game.setPlayer1CardsInHand(new ArrayList<>());
+    game.setPlayer2CardsInHand(Arrays.asList(new Card(Card.Suit.SPADES, Card.Rank.ACE)));
+    game.setPlayer3CardsInHand(Arrays.asList(new Card(Card.Suit.CLUBS, Card.Rank.ACE)));
+    game.setPlayer4CardsInHand(Arrays.asList(new Card(Card.Suit.HEARTS, Card.Rank.ACE)));
+    game.calculateScore(game.getPlayerList().get(0));
+    assertEquals(3, game.getPlayer1Score());
   }
 }

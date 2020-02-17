@@ -14,6 +14,7 @@ public class PlayerStrategyAbstractTest {
   Random rand = new Random();
   PlayerStrategyAbstract abstractPlayerStrategy;
   Card randomCard;
+  PlayerTurn turn;
 
   @Before
   public void setUp() {
@@ -33,6 +34,7 @@ public class PlayerStrategyAbstractTest {
         return null;
       }
     };
+    turn = new PlayerTurn();
     List<Integer> opponentIds = new ArrayList<>(Arrays.asList(2, 3, 4));
     abstractPlayerStrategy.init(1, opponentIds);
     List<Card> deck = Card.getDeck();
@@ -45,7 +47,6 @@ public class PlayerStrategyAbstractTest {
   // also indirectly testing init.
   @Test
   public void cardCountingTest() {
-    PlayerTurn turn = new PlayerTurn();
     // playerId 2 should be playerAfter in the context of turn.
     turn.playerId = 2;
     turn.playedCard = randomCard;
@@ -58,7 +59,6 @@ public class PlayerStrategyAbstractTest {
 
   @Test
   public void drewACardTestTrue() {
-    PlayerTurn turn = new PlayerTurn();
     // playerId 4 should be playerBefore in the context of turn.
     turn.playerId = 4;
     turn.drewACard = true;
@@ -70,7 +70,6 @@ public class PlayerStrategyAbstractTest {
 
   @Test
   public void drewACardTestFalse() {
-    PlayerTurn turn = new PlayerTurn();
     // playerId 4 should be playerBefore in the context of turn.
     turn.playerId = 4;
     turn.drewACard = false;
@@ -82,7 +81,6 @@ public class PlayerStrategyAbstractTest {
 
   @Test
   public void declaredSuitTestTrue() {
-    PlayerTurn turn = new PlayerTurn();
     // playerId 2 should be playerAfter in the context of turn.
     turn.playerId = 2;
     turn.playedCard = randomCard;
@@ -96,7 +94,6 @@ public class PlayerStrategyAbstractTest {
 
   @Test
   public void declaredSuitTestFalse() {
-    PlayerTurn turn = new PlayerTurn();
     // playerId 2 should be playerAfter in the context of turn.
     turn.playerId = 2;
     turn.playedCard = randomCard;
