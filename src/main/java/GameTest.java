@@ -59,7 +59,7 @@ public class GameTest {
     player2.init(2, Arrays.asList(1, 3, 4));
     deck = Card.getDeck();
     Collections.shuffle(deck, rand);
-    game = new Game(player1, player2, player3, player4);
+    game = new Game(player1, player2, player1, player2);
     /*
 
 
@@ -89,7 +89,7 @@ public class GameTest {
 
   @Test
   public void isValidMoveTestTrueRegular() {
-    game.setDraw(game.getPlayer1CardsInHand().get(0));
+    game.draw.set(0, game.getPlayer1CardsInHand().get(0));
     assertTrue(game.isValidMove(game.getPlayer1CardsInHand().get(0), game.getPlayerList().get(0)));
   }
 
@@ -98,4 +98,20 @@ public class GameTest {
     assertFalse(game.isValidMove(game.getPlayer2CardsInHand().get(0), game.getPlayerList().get(0)));
   }
 
+  @Test
+  public void checkEndOfGameEmptyDraw() {
+    game.draw.clear();
+    assertTrue(game.checkEndOfGame());
+  }
+
+  @Test
+  public void checkEndOfGameEmptyHand() {
+    game.clearPlayer1CardsInHand();
+    assertTrue(game.checkEndOfGame());
+  }
+
+  @Test
+  public void checkEndOfGameFalse() {
+    assertFalse(game.checkEndOfGame());
+  }
 }

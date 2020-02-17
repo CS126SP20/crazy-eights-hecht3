@@ -14,6 +14,7 @@ public class Game {
   public List<Card> deck;
   public List<Card> draw;
   public List<Card> discard;
+  public boolean isEndOfGame;
   private PlayerStrategy player1;
   private PlayerStrategy player2;
   private PlayerStrategy player3;
@@ -64,6 +65,7 @@ public class Game {
   PlayerStrategy performRound() {
     return null;
   }
+
   boolean isValidMove(Card cardPlayed, PlayerStrategy player) {
     if (    (draw.get(0).getSuit().equals(cardPlayed.getSuit())
           || draw.get(0).getRank().equals(cardPlayed.getRank())
@@ -77,9 +79,22 @@ public class Game {
   void calculateScore() {
 
   }
-  boolean isEndOfGame() {
+
+  boolean checkEndOfGame() {
+    if (draw.size() == 0) {
+      isEndOfGame = true;
+      return true;
+    }
+    for (PlayerStrategy player : playerList) {
+      if (getPlayerHand(player).size() == 0) {
+        isEndOfGame = true;
+        return true;
+      }
+    }
+    isEndOfGame = false;
     return false;
   }
+
   List<Card> getPlayerHand(PlayerStrategy givenPlayer) {
     if (player1.equals(givenPlayer)) {
       return player1CardsInHand;
@@ -93,6 +108,7 @@ public class Game {
       return null;
     }
   }
+
   List<Card> getDeck() {
     return deck;
   }
@@ -111,7 +127,7 @@ public class Game {
   List<PlayerStrategy> getPlayerList() {
     return playerList;
   }
-  void setDraw(Card card) {
-    draw.set(0, card);
+  void clearPlayer1CardsInHand() {
+    player1CardsInHand.clear();
   }
 }
