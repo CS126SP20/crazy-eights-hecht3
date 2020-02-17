@@ -25,7 +25,7 @@ public class GameTest {
   public void setUp() { ;
     List<Integer> opponentIds = new ArrayList<>(Arrays.asList(2, 3, 4));
     player1 = new PlayerStrategy1();
-    player2 = new PlayerStrategy1();
+    player2 = new PlayerStrategy2();
     player1.init(1, Arrays.asList(2, 3, 4));
     player2.init(2, Arrays.asList(1, 3, 4));
     deck = Card.getDeck();
