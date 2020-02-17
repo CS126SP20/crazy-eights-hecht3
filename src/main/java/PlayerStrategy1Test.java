@@ -83,4 +83,22 @@ public class PlayerStrategy1Test {
             new Card(Card.Suit.DIAMONDS, Card.Rank.SEVEN));
     assertEquals(new Card(Card.Suit.SPADES, Card.Rank.ACE), player1.playCard());
   }
+
+  @Test
+  public void playCardEight() {
+    player1.receiveInitialCards(Arrays.asList(new Card(Card.Suit.DIAMONDS, Card.Rank.EIGHT),
+            new Card(Card.Suit.DIAMONDS, Card.Rank.NINE),
+            new Card(Card.Suit.DIAMONDS, Card.Rank.KING)));
+    player1.shouldDrawCard(new Card(Card.Suit.CLUBS, Card.Rank.ACE), Card.Suit.CLUBS);
+    player1.playerBeforePlayedCards = Arrays.asList(new Card(Card.Suit.DIAMONDS, Card.Rank.ACE),
+            new Card(Card.Suit.DIAMONDS, Card.Rank.TWO),
+            new Card(Card.Suit.DIAMONDS, Card.Rank.THREE));
+    player1.playerAfterPlayedCards = Arrays.asList(new Card(Card.Suit.CLUBS, Card.Rank.ACE),
+            new Card(Card.Suit.SPADES, Card.Rank.TWO),
+            new Card(Card.Suit.HEARTS, Card.Rank.ACE));
+    player1.playerAcrossPlayedCards = Arrays.asList(new Card(Card.Suit.DIAMONDS, Card.Rank.FIVE),
+            new Card(Card.Suit.DIAMONDS, Card.Rank.SIX),
+            new Card(Card.Suit.DIAMONDS, Card.Rank.SEVEN));
+    assertEquals(new Card(Card.Suit.DIAMONDS, Card.Rank.EIGHT), player1.playCard());
+  }
 }
