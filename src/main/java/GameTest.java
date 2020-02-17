@@ -11,10 +11,10 @@ import static org.junit.Assert.assertEquals;
 
 public class GameTest {
   Random rand = new Random(0);
-  PlayerStrategyAbstract player1;
-  PlayerStrategyAbstract player2;
-  PlayerStrategyAbstract player3;
-  PlayerStrategyAbstract player4;
+  PlayerStrategy player1;
+  PlayerStrategy player2;
+  PlayerStrategy player3;
+  PlayerStrategy player4;
   Card randomCard;
   Game game;
   List<Card> deck;
@@ -24,38 +24,8 @@ public class GameTest {
   @Before
   public void setUp() { ;
     List<Integer> opponentIds = new ArrayList<>(Arrays.asList(2, 3, 4));
-    player1 = new PlayerStrategyAbstract() {
-      @Override
-      public boolean shouldDrawCard(Card topPileCard, Card.Suit changedSuit) {
-        return false;
-      }
-
-      @Override
-      public Card playCard() {
-        return null;
-      }
-
-      @Override
-      public Card.Suit declareSuit() {
-        return null;
-      }
-    };
-    player2 = new PlayerStrategyAbstract() {
-      @Override
-      public boolean shouldDrawCard(Card topPileCard, Card.Suit changedSuit) {
-        return false;
-      }
-
-      @Override
-      public Card playCard() {
-        return null;
-      }
-
-      @Override
-      public Card.Suit declareSuit() {
-        return null;
-      }
-    };
+    player1 = new PlayerStrategy1();
+    player2 = new PlayerStrategy1();
     player1.init(1, Arrays.asList(2, 3, 4));
     player2.init(2, Arrays.asList(1, 3, 4));
     deck = Card.getDeck();

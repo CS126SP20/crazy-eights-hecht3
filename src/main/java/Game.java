@@ -6,26 +6,31 @@ import java.util.*;
 public class Game {
 
   static final int DEAL_SIZE = 5;
+  static final int PLAYER_1_ID = 1;
+  static final int PLAYER_2_ID = 2;
+  static final int PLAYER_3_ID = 3;
+  static final int PLAYER_4_ID = 4;
+
 
   Random rand = new Random(0);
   public List<Card> deck;
   public List<Card> draw;
   public List<Card> discard;
   public boolean isEndOfGame;
-  private PlayerStrategyGame player1;
-  private PlayerStrategyGame player2;
-  private PlayerStrategyGame player3;
-  private PlayerStrategyGame player4;
-  List<PlayerStrategyGame> playerList = new ArrayList<>();
+  private PlayerStrategyGameState player1;
+  private PlayerStrategyGameState player2;
+  private PlayerStrategyGameState player3;
+  private PlayerStrategyGameState player4;
+  List<PlayerStrategyGameState> playerList = new ArrayList<>();
 
   public Game(PlayerStrategy player1Init, PlayerStrategy player2Init,
               PlayerStrategy player3Init, PlayerStrategy player4Init) {
     deck = Card.getDeck();
     Collections.shuffle(deck, rand);
-    this.player1 = new PlayerStrategyGame(player1Init);
-    this.player2 = new PlayerStrategyGame(player2Init);
-    this.player3 = new PlayerStrategyGame(player3Init);
-    this.player4 = new PlayerStrategyGame(player4Init);
+    this.player1 = new PlayerStrategyGameState(player1Init);
+    this.player2 = new PlayerStrategyGameState(player2Init);
+    this.player3 = new PlayerStrategyGameState(player3Init);
+    this.player4 = new PlayerStrategyGameState(player4Init);
     playerList.add(player1);
     playerList.add(player2);
     playerList.add(player3);
@@ -41,7 +46,7 @@ public class Game {
 
   }
 
-  public List<Card> deal(PlayerStrategyGame player) {
+  public List<Card> deal(PlayerStrategyGameState player) {
     List<Card> playerHand = new ArrayList<>();
     for (int i = 0; i < DEAL_SIZE; i++) {
       // We can just take the card in position 0 of the deck to simulate taking the top card off
@@ -69,7 +74,7 @@ public class Game {
     return null;
   }
 
-  boolean isValidMove(Card cardPlayed, PlayerStrategyGame player) {
+  boolean isValidMove(Card cardPlayed, PlayerStrategyGameState player) {
     if (    (draw.get(0).getSuit().equals(cardPlayed.getSuit())
           || draw.get(0).getRank().equals(cardPlayed.getRank())
           || cardPlayed.getRank().equals(Card.Rank.EIGHT))
@@ -79,10 +84,10 @@ public class Game {
       return false;
     }
   }
-  void calculateScore(PlayerStrategyGame winner) {
+  void calculateScore(PlayerStrategyGameState winner) {
     if (winner == null) {
-      for (PlayerStrategyGame player : playerList) {
-        for (PlayerStrategyGame opposingPlayer : playerList) {
+      for (PlayerStrategyGameState player : playerList) {
+        for (PlayerStrategyGameState opposingPlayer : playerList) {
           if (!opposingPlayer.equals(player)) {
             for (Card card : opposingPlayer.cardsInHand) {
               player.score += card.getPointValue();
@@ -91,7 +96,7 @@ public class Game {
         }
       }
     } else {
-      for (PlayerStrategyGame player : playerList) {
+      for (PlayerStrategyGameState player : playerList) {
         if (!player.equals(winner)) {
           for (Card card : player.cardsInHand) {
             winner.score += card.getPointValue();
@@ -101,12 +106,12 @@ public class Game {
     }
   }
 
-  PlayerStrategyGame checkEndOfGame() {
+  PlayerStrategyGameState checkEndOfGame() {
     if (draw.size() == 0) {
       isEndOfGame = true;
       return null;
     } else {
-      for (PlayerStrategyGame player : playerList) {
+      for (PlayerStrategyGameState player : playerList) {
         if (player.cardsInHand.size() == 0) {
           isEndOfGame = true;
           return player;
@@ -132,7 +137,7 @@ public class Game {
   List<Card> getPlayer4CardsInHand() {
     return player4.cardsInHand;
   }
-  List<PlayerStrategyGame> getPlayerList() {
+  List<PlayerStrategyGameState> getPlayerList() {
     return playerList;
   }
   int getPlayer1Score() {

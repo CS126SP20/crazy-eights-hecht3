@@ -22,6 +22,9 @@ public abstract class PlayerStrategyAbstract implements PlayerStrategy {
   Card.Suit playerBeforeDeclaredSuit;
   Card.Suit playerAfterDeclaredSuit;
   Card.Suit playerAcrossDeclaredSuit;
+  Card topCard;
+  Card.Suit idealSuit;
+  Card.Rank idealRank;
 
   /**
    * Gives the player their assigned id, as well as a list of the opponents' assigned ids.

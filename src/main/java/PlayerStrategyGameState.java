@@ -3,12 +3,12 @@ import student.crazyeights.PlayerStrategy;
 
 import java.util.List;
 
-public class PlayerStrategyGame {
+public class PlayerStrategyGameState {
   List<Card> cardsInHand;
   public int score;
   PlayerStrategy player;
 
-  PlayerStrategyGame(PlayerStrategy player) {
+  PlayerStrategyGameState(PlayerStrategy player) {
     this.player = player;
   }
 }
