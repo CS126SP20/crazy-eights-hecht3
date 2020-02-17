@@ -36,7 +36,19 @@ public abstract class PlayerStrategyAbstract implements PlayerStrategy {
    * @param opponentIds A list of ids for this player's opponents
    */
   public void init(int playerId, List<Integer> opponentIds) {
+
+
+
+
     //reset();
+
+
+
+
+
+
+
+
     for (Integer id : opponentIds) {
       if (NUM_PLAYERS - id == playerId + 1) {
         playerAfterId = id;
