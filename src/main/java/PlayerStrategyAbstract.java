@@ -8,6 +8,7 @@ import java.util.List;
 public abstract class PlayerStrategyAbstract implements PlayerStrategy {
   static final int NUM_PLAYERS = 4;
 
+  Integer playerSelfId;
   Integer playerBeforeId;
   Integer playerAfterId;
   Integer playerAcrossId;
@@ -42,6 +43,7 @@ public abstract class PlayerStrategyAbstract implements PlayerStrategy {
         playerAcrossId = id;
       }
     }
+    playerSelfId = playerId;
     playerBeforePlayedCards = new ArrayList<>();
     playerAfterPlayedCards = new ArrayList<>();
     playerAcrossPlayedCards = new ArrayList<>();

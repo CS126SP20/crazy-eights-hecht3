@@ -7,7 +7,6 @@ import java.util.Random;
 
 public class Main {
     public static void main(String[] args) {
-        // TODO(student): Finish this.
         ArrayList<PlayerStrategy> strategies = new ArrayList<>();
     }
 }

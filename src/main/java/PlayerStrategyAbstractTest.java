@@ -14,7 +14,6 @@ public class PlayerStrategyAbstractTest {
   Random rand = new Random();
   PlayerStrategyAbstract abstractPlayerStrategy;
   Card randomCard;
-  private static final int DECK_SIZE = Card.Suit.values().length * Card.Rank.values().length;
 
   @Before
   public void setUp() {
@@ -36,7 +35,8 @@ public class PlayerStrategyAbstractTest {
     };
     List<Integer> opponentIds = new ArrayList<>(Arrays.asList(2, 3, 4));
     abstractPlayerStrategy.init(1, opponentIds);
-    randomCard = Card.getDeck().get(rand.nextInt(DECK_SIZE));
+    List<Card> deck = Card.getDeck();
+    randomCard = deck.get(deck.size() - 1);
   }
 
   // The following are general tests for PlayerStrategyAbstract, which creates the methods that each
