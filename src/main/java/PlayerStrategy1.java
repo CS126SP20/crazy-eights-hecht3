@@ -82,6 +82,7 @@ public class PlayerStrategy1 extends PlayerStrategyAbstract{
     List<List<Card>> playPossibilities = new ArrayList<>(Arrays.asList(rank1, rank2, rank3, rank4));
     for (List<Card> list : playPossibilities) {
       if (list.size() > 0) {
+        cardsInHand.remove(list.get(0));
         return list.get(0);
       }
     }

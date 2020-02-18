@@ -38,16 +38,7 @@ public abstract class PlayerStrategyAbstract implements PlayerStrategy {
   public void init(int playerId, List<Integer> opponentIds) {
 
 
-
-
     //reset();
-
-
-
-
-
-
-
 
     for (Integer id : opponentIds) {
       if (NUM_PLAYERS - id == playerId + 1) {
@@ -70,7 +61,7 @@ public abstract class PlayerStrategyAbstract implements PlayerStrategy {
    * @param cards The initial list of cards dealt to this player
    */
   public void receiveInitialCards(List<Card> cards) {
-    cardsInHand = cards;
+    cardsInHand = new ArrayList<>(cards);
   }
 
   /**
@@ -196,6 +187,14 @@ public abstract class PlayerStrategyAbstract implements PlayerStrategy {
   public void reset() {
     playerAfterId = null;
     playerBeforeId = null;
+    playerAcrossId = null;
+    playerSelfId = null;
+    Card topCard = null;
+    Card.Suit idealSuit = null;
+    Card.Rank idealRank = null;
+    playerBeforeDeclaredSuit = null;
+    playerAfterDeclaredSuit = null;
+    playerAcrossDeclaredSuit = null;
     cardsInHand.clear();
   }
 }

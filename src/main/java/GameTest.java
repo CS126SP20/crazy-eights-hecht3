@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 public class GameTest {
-  Random rand = new Random(0);
+  Random rand = new Random();
   PlayerStrategy player1;
   PlayerStrategy player2;
   PlayerStrategy player3;
@@ -26,11 +26,15 @@ public class GameTest {
     List<Integer> opponentIds = new ArrayList<>(Arrays.asList(2, 3, 4));
     player1 = new PlayerStrategy1();
     player2 = new PlayerStrategy2();
+    player3 = new PlayerStrategy1();
+    player4 = new PlayerStrategy2();
     player1.init(1, Arrays.asList(2, 3, 4));
     player2.init(2, Arrays.asList(1, 3, 4));
+    player3.init(3, Arrays.asList(2, 4, 1));
+    player4.init(2, Arrays.asList(1, 2, 3));
     deck = Card.getDeck();
     Collections.shuffle(deck, rand);
-    game = new Game(player1, player2, player1, player2);
+    game = new Game(player1, player2, player3, player4);
     /*
 
 
@@ -50,7 +54,8 @@ public class GameTest {
   @Test
   public void dealTest() {
     assertEquals(5, game.getPlayer1CardsInHand().size());
-    assertEquals(DECK_SIZE - Game.DEAL_SIZE * game.playerList.size(), game.getDeck().size());
+    // We subtract 1 here because 1 extra card gets removed from the deck to be put into the discard
+    assertEquals(DECK_SIZE - Game.DEAL_SIZE * game.playerList.size() - 1, game.getDeck().size());
   }
 
   @Test
@@ -60,13 +65,13 @@ public class GameTest {
 
   @Test
   public void isValidMoveTestTrueRegular() {
-    game.draw.set(0, game.getPlayer1CardsInHand().get(0));
+    game.discard.set(0, game.getPlayer1CardsInHand().get(0));
     assertTrue(game.isValidMove(game.getPlayer1CardsInHand().get(0), game.getPlayerList().get(0)));
   }
 
   @Test
   public void isValidMoveTestTrueEight() {
-    game.draw.set(0, new Card(Card.Suit.DIAMONDS, Card.Rank.ACE));
+    game.discard.set(0, new Card(Card.Suit.DIAMONDS, Card.Rank.ACE));
     game.setPlayer1CardsInHand(Arrays.asList(new Card(Card.Suit.SPADES, Card.Rank.EIGHT)));
     assertTrue(game.isValidMove(game.getPlayer1CardsInHand().get(0), game.getPlayerList().get(0)));
   }
@@ -115,4 +120,5 @@ public class GameTest {
     game.calculateScore(game.getPlayerList().get(0));
     assertEquals(3, game.getPlayer1Score());
   }
+
 }
