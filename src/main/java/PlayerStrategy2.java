@@ -2,15 +2,15 @@ import student.crazyeights.Card;
 
 import java.util.*;
 
-public class PlayerStrategy2 extends PlayerStrategyAbstract{
+public class PlayerStrategy2 extends PlayerStrategyAbstract {
 
   /**
-   * Called every time the player takes a turn to see if that player needs to draw a card or has
-   * a possible move in its hand.
+   * Called every time the player takes a turn to see if that player needs to draw a card or has a
+   * possible move in its hand.
    *
    * @param topPileCard The card on the top of the discard pile
-   * @param changedSuit The suit of the card on the top of the discard pile or the suit declared
-   *                    by a player that played an eight.
+   * @param changedSuit The suit of the card on the top of the discard pile or the suit declared by
+   *     a player that played an eight.
    * @return whether or not the player needs to draw a card
    */
   @Override
@@ -20,6 +20,7 @@ public class PlayerStrategy2 extends PlayerStrategyAbstract{
     for (Card card : cardsInHand) {
       if (card.getSuit().equals(changedSuit) || card.getRank().equals(topPileCard.getRank())) {
         drawCard = false;
+        break;
       }
     }
     return drawCard;
@@ -27,9 +28,9 @@ public class PlayerStrategy2 extends PlayerStrategyAbstract{
 
   /**
    * Called when the player is able to play card. In this PlayerStrategy, playCard looks for the
-   * suit and rank that is most common in their own hand and tries to eliminate cards with that
-   * suit or rank. This ensures that the player's hand has as much variety as possible, lessening
-   * the chances that the player gets stuck having to draw.
+   * suit and rank that is most common in their own hand and tries to eliminate cards with that suit
+   * or rank. This ensures that the player's hand has as much variety as possible, lessening the
+   * chances that the player gets stuck having to draw.
    *
    * @return the card to be played
    */
@@ -43,16 +44,17 @@ public class PlayerStrategy2 extends PlayerStrategyAbstract{
       if (card.getRank().equals(Card.Rank.EIGHT)) {
         rank1.add(card);
         break;
-      } else if (card.getSuit().equals(idealSuit) && card.getRank().equals(idealRank)
-                 && (topCard.getSuit().equals(card.getSuit())
-                 || topCard.getRank().equals(card.getRank()))) {
+      } else if (card.getSuit().equals(idealSuit)
+          && card.getRank().equals(idealRank)
+          && (topCard.getSuit().equals(card.getSuit())
+              || topCard.getRank().equals(card.getRank()))) {
         rank2.add(card);
       } else if ((card.getSuit().equals(idealSuit) || card.getRank().equals(idealRank))
-                 && (topCard.getSuit().equals(card.getSuit())
-                 || topCard.getRank().equals(card.getRank()))) {
+          && (topCard.getSuit().equals(card.getSuit())
+              || topCard.getRank().equals(card.getRank()))) {
         rank3.add(card);
       } else if (topCard.getSuit().equals(card.getSuit())
-                 || topCard.getRank().equals(card.getRank())) {
+          || topCard.getRank().equals(card.getRank())) {
         rank4.add(card);
       }
     }
@@ -75,6 +77,7 @@ public class PlayerStrategy2 extends PlayerStrategyAbstract{
     Map<Card.Suit, Integer> suitsInHand = new HashMap<Card.Suit, Integer>();
     Map<Card.Rank, Integer> ranksInHand = new HashMap<Card.Rank, Integer>();
 
+    // Use the enumerable methods in Card class to put all the keys in the HashMaps
     for (Card.Suit suit : Card.Suit.values()) {
       suitsInHand.put(suit, 0);
     }
@@ -82,6 +85,7 @@ public class PlayerStrategy2 extends PlayerStrategyAbstract{
       ranksInHand.put(rank, 0);
     }
 
+    // Place all cards played in their respective locations in the HashMap
     for (Card card : cardsInHand) {
       suitsInHand.put(card.getSuit(), suitsInHand.get(card.getSuit()) + 1);
       ranksInHand.put(card.getRank(), ranksInHand.get(card.getRank()) + 1);
@@ -108,9 +112,7 @@ public class PlayerStrategy2 extends PlayerStrategyAbstract{
     idealRank = maxEntryRank.getKey();
   }
 
-  /**
-   * @return the suit the player wants to declare (called if they play an eight).
-   */
+  /** @return the suit the player wants to declare (called if they play an eight). */
   @Override
   public Card.Suit declareSuit() {
     return idealSuit;

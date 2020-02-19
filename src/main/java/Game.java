@@ -4,11 +4,15 @@ import java.util.*;
 
 public class Game {
 
+  /** The number of cards each player should be dealt */
   static final int DEAL_SIZE = 5;
+  /** The ID of each player as a constant */
   static final int PLAYER_1_ID = 1;
+
   static final int PLAYER_2_ID = 2;
   static final int PLAYER_3_ID = 3;
   static final int PLAYER_4_ID = 4;
+  /** The total number of players as a constant */
   static final int NUM_PLAYERS = 4;
 
   Random rand = new Random();
@@ -94,8 +98,8 @@ public class Game {
 
   /**
    * Continues gameplay until a winner is found or checkEndOfGame has figured out that it is the end
-   * of the game. Loops performRound() until isEndOfGame is true. Also throws an exception if
-   * a player makes an invalid move i.e. cheating occurs.
+   * of the game. Loops performRound() until isEndOfGame is true. Also throws an exception if a
+   * player makes an invalid move i.e. cheating occurs.
    */
   public void play() {
     PlayerStrategyGameState winner = null;
@@ -159,6 +163,8 @@ public class Game {
       checkEndOfGame();
       return null;
     }
+
+    // Check if a player should draw a card and if so, give them the card from the top of draw
     if (player.getPlayerStrategy().shouldDrawCard(discard.get(0), lastDeclaredSuit)) {
       player.getPlayerStrategy().receiveCard(draw.get(0));
       player.cardsInHand.add(draw.get(0));
@@ -166,11 +172,11 @@ public class Game {
       draw.remove(draw.get(0));
     } else {
       turn.drewACard = false;
+      // Allow player to play their card of choice and then check to make sure that move was valid
+      // and that they actually hold the card they played.
       Card cardPlayed = player.getPlayerStrategy().playCard();
       if (!isValidMove(cardPlayed, player)) {
         cheater = true;
-        // A try-catch block in main should find if there is a cheater if we organize our functions
-        // in this manner.
         return null;
       }
       turn.playedCard = cardPlayed;
@@ -209,7 +215,7 @@ public class Game {
    * the point values of the cards that the opposing players have.
    *
    * @param winner the player (if any) that has emptied their hand. Is null if no player has emptied
-   *               its hand.
+   *     its hand.
    */
   void calculateScore(PlayerStrategyGameState winner) {
     if (winner == null) {
@@ -234,11 +240,11 @@ public class Game {
   }
 
   /**
-   * Checks to see if the draw pile is empty or any player has emptied their hand, in which case
-   * the game is over and scores need to be calculated.
+   * Checks to see if the draw pile is empty or any player has emptied their hand, in which case the
+   * game is over and scores need to be calculated.
    *
    * @return the player (if any) that emptied their hand. If the game has ended because the draw
-   *         pile is empty, this method returns null.
+   *     pile is empty, this method returns null.
    */
   PlayerStrategyGameState checkEndOfGame() {
     if (draw.size() == 0) {
@@ -257,8 +263,8 @@ public class Game {
   }
 
   /**
-   * The following are methods that were used for testing. They provide no functional purpose to
-   * the Game class, main class, or any of the PlayerStrategy implementations.
+   * The following are methods that were used for testing. They provide no functional purpose to the
+   * Game class, main class, or any of the PlayerStrategy implementations.
    */
   List<Card> getDeck() {
     return deck;

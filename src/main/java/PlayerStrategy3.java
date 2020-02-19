@@ -2,17 +2,17 @@ import student.crazyeights.Card;
 
 import java.util.*;
 
-public class PlayerStrategy3 extends PlayerStrategyAbstract{
+public class PlayerStrategy3 extends PlayerStrategyAbstract {
 
   /**
-   * Called every time the player takes a turn to see if that player needs to draw a card or has
-   * a possible move in its hand.
+   * Called every time the player takes a turn to see if that player needs to draw a card or has a
+   * possible move in its hand.
    *
    * @param topPileCard The card on the top of the discard pile
-   * @param changedSuit The suit of the card on the top of the discard pile or the suit declared
-   *                    by a player that played an eight.
+   * @param changedSuit The suit of the card on the top of the discard pile or the suit declared by
+   *     a player that played an eight.
    * @return whether or not the player needs to draw a card. Will always be false because this
-   * PlayerStrategy always cheats.
+   *     PlayerStrategy always cheats.
    */
   @Override
   public boolean shouldDrawCard(Card topPileCard, Card.Suit changedSuit) {
@@ -21,9 +21,9 @@ public class PlayerStrategy3 extends PlayerStrategyAbstract{
   }
 
   /**
-   * Called every time this player has a turn. In this PlayerStrategy, playCard looks for the
-   * suit and rank most played by the other players using the helper function findIdealSuitAndRank
-   * and creates and plays that card in order to increase the chances of the other players having to
+   * Called every time this player has a turn. In this PlayerStrategy, playCard looks for the suit
+   * and rank most played by the other players using the helper function findIdealSuitAndRank and
+   * creates and plays that card in order to increase the chances of the other players having to
    * draw on their next turn. The card is played regardless of whether or not the user has the card
    * in its hand. Additionally, if the topCard is not the ideal suit, this PlayerStrategy plays an
    * eight to make it the ideal suit.
@@ -32,6 +32,7 @@ public class PlayerStrategy3 extends PlayerStrategyAbstract{
    */
   @Override
   public Card playCard() {
+    findIdealSuitAndRank();
     if (idealSuit.equals(topCard.getSuit()) || idealRank.equals(topCard.getRank())) {
       return new Card(idealSuit, idealRank);
     } else {
@@ -47,6 +48,7 @@ public class PlayerStrategy3 extends PlayerStrategyAbstract{
     Map<Card.Suit, Integer> suitsPlayed = new HashMap<>();
     Map<Card.Rank, Integer> ranksPlayed = new HashMap<>();
 
+    // Use the enumerable methods in Card class to put all the keys in the HashMaps
     for (Card.Suit suit : Card.Suit.values()) {
       suitsPlayed.put(suit, 0);
     }
@@ -59,6 +61,7 @@ public class PlayerStrategy3 extends PlayerStrategyAbstract{
     allPlayedCards.addAll(playerAfterPlayedCards);
     allPlayedCards.addAll(playerAcrossPlayedCards);
 
+    // Place all cards played in their respective locations in the HashMap
     for (Card card : allPlayedCards) {
       suitsPlayed.put(card.getSuit(), suitsPlayed.get(card.getSuit()) + 1);
       ranksPlayed.put(card.getRank(), ranksPlayed.get(card.getRank()) + 1);
@@ -85,9 +88,7 @@ public class PlayerStrategy3 extends PlayerStrategyAbstract{
     idealRank = maxEntryRank.getKey();
   }
 
-  /**
-   * @return the suit the player wants to declare (called if they play an eight).
-   */
+  /** @return the suit the player wants to declare (called if they play an eight). */
   @Override
   public Card.Suit declareSuit() {
     return idealSuit;

@@ -38,6 +38,8 @@ public class PlayerStrategy1 extends PlayerStrategyAbstract {
   public Card playCard() {
     findIdealSuitAndRank();
 
+    // Create lists for each category of play. rank1 is an eight, rank2 is an ideal card, rank3 is
+    // an ideal rank or suit, rank4 is none of the above.
     List<Card> rank1 = new ArrayList<>();
     List<Card> rank2 = new ArrayList<>();
     List<Card> rank3 = new ArrayList<>();
@@ -61,6 +63,9 @@ public class PlayerStrategy1 extends PlayerStrategyAbstract {
         rank4.add(card);
       }
     }
+
+    // Iterate through the list of playPossiblities (which is a list of ranks) and play the Card in
+    // the highest rank.
     List<List<Card>> playPossibilities = new ArrayList<>(Arrays.asList(rank1, rank2, rank3, rank4));
     for (List<Card> list : playPossibilities) {
       if (list.size() > 0) {
@@ -80,6 +85,7 @@ public class PlayerStrategy1 extends PlayerStrategyAbstract {
     Map<Card.Suit, Integer> suitsPlayed = new HashMap<>();
     Map<Card.Rank, Integer> ranksPlayed = new HashMap<>();
 
+    // Use the enumerable methods in Card class to put all the keys in the HashMaps
     for (Card.Suit suit : Card.Suit.values()) {
       suitsPlayed.put(suit, 0);
     }
@@ -92,6 +98,7 @@ public class PlayerStrategy1 extends PlayerStrategyAbstract {
     allPlayedCards.addAll(playerAfterPlayedCards);
     allPlayedCards.addAll(playerAcrossPlayedCards);
 
+    // Place all cards played in their respective locations in the HashMap
     for (Card card : allPlayedCards) {
       suitsPlayed.put(card.getSuit(), suitsPlayed.get(card.getSuit()) + 1);
       ranksPlayed.put(card.getRank(), ranksPlayed.get(card.getRank()) + 1);

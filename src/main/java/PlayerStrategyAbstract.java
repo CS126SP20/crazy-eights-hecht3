@@ -5,7 +5,6 @@ import student.crazyeights.PlayerTurn;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * An abstract class that contains what each PlayerStrategy has in common. Implements the methods
  * that would likely never differ between PlayerStrategies such as init and processOpponentActions.
@@ -14,15 +13,23 @@ import java.util.List;
 public abstract class PlayerStrategyAbstract implements PlayerStrategy {
   static final int NUM_PLAYERS = 4;
 
+  /** The IDs for each player relative to this instance of PlayerStrategy */
   Integer playerSelfId;
+
   Integer playerBeforeId;
   Integer playerAfterId;
   Integer playerAcrossId;
+
+  /** Card counting lists for each player in the game */
   List<Card> cardsInHand;
+
   List<Card> playerBeforePlayedCards;
   List<Card> playerAfterPlayedCards;
   List<Card> playerAcrossPlayedCards;
+
+  /** Variables for processing opponent moves */
   boolean playerBeforeDrewCard;
+
   boolean playerAfterDrewCard;
   boolean playerAcrossDrewCard;
   Card.Suit playerBeforeDeclaredSuit;
