@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 public class GameTest {
-  Random rand = new Random();
+  Random rand = new Random(0);
   PlayerStrategy player1;
   PlayerStrategy player2;
   PlayerStrategy player3;
@@ -22,7 +22,7 @@ public class GameTest {
   private static final int NUM_PLAYERS = 4;
 
   @Before
-  public void setUp() { ;
+  public void setUp() {
     List<Integer> opponentIds = new ArrayList<>(Arrays.asList(2, 3, 4));
     player1 = new PlayerStrategy1();
     player2 = new PlayerStrategy2();
@@ -35,19 +35,9 @@ public class GameTest {
     deck = Card.getDeck();
     Collections.shuffle(deck, rand);
     game = new Game(player1, player2, player3, player4);
-    /*
-
-
-
-      CHANGE THESE PLAYER STRATEGIES AFTER THEY HAVE BEEN COMPLETED TO ACTUAL PLAYERSTRATEGIES.
-
-
-
-
-     */
   }
-  // Getter functions are trivial and do not need to be tested (even getPlayerHand because it just
-  // iterates through a list and checks for equality.
+
+  // Getter functions are trivial and do not need to be tested.
   // Test for the deal() function. The function is called 4 times when the constructor is called
   // (in @Before in this test class).
   // Also tests the constructor to see if it dealt cards to players by calling getPlayer1CardsInHand

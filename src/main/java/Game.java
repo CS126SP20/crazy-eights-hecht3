@@ -2,7 +2,6 @@ import student.crazyeights.*;
 
 import java.util.*;
 
-
 public class Game {
 
   static final int DEAL_SIZE = 5;
@@ -10,7 +9,7 @@ public class Game {
   static final int PLAYER_2_ID = 2;
   static final int PLAYER_3_ID = 3;
   static final int PLAYER_4_ID = 4;
-
+  static final int NUM_PLAYERS = 4;
 
   Random rand = new Random();
   public List<Card> deck;
@@ -26,19 +25,29 @@ public class Game {
   private PlayerStrategyGameState player4;
   List<PlayerStrategyGameState> playerList = new ArrayList<>();
 
-  public Game(PlayerStrategy player1Init, PlayerStrategy player2Init,
-              PlayerStrategy player3Init, PlayerStrategy player4Init) {
+  public Game(
+      PlayerStrategy player1Init,
+      PlayerStrategy player2Init,
+      PlayerStrategy player3Init,
+      PlayerStrategy player4Init) {
     deck = Card.getDeck();
     Collections.shuffle(deck, rand);
-    this.player1 = new PlayerStrategyGameState (player1Init, PLAYER_1_ID);
-    this.player2 = new PlayerStrategyGameState (player2Init, PLAYER_2_ID);
-    this.player3 = new PlayerStrategyGameState (player3Init, PLAYER_3_ID);
-    this.player4 = new PlayerStrategyGameState (player4Init, PLAYER_4_ID);
+    this.player1 = new PlayerStrategyGameState(player1Init, PLAYER_1_ID);
+    this.player2 = new PlayerStrategyGameState(player2Init, PLAYER_2_ID);
+    this.player3 = new PlayerStrategyGameState(player3Init, PLAYER_3_ID);
+    this.player4 = new PlayerStrategyGameState(player4Init, PLAYER_4_ID);
     playerList.add(player1);
     playerList.add(player2);
     playerList.add(player3);
     playerList.add(player4);
     for (PlayerStrategyGameState player : playerList) {
+      List<Integer> otherPlayerIds = new ArrayList<>();
+      for (Integer i = 1; i <= NUM_PLAYERS; i++) {
+        if (i != player.selfId) {
+          otherPlayerIds.add(i);
+        }
+      }
+      player.getPlayerStrategy().init(player.selfId, otherPlayerIds);
       player.cardsInHand = deal(player.getPlayerStrategy());
     }
     draw = deck;
@@ -50,17 +59,24 @@ public class Game {
     draw.remove(draw.get(0));
   }
 
-  public void play() throws Exception {
-    PlayerStrategy winner = null;
-    while (winner == null && !cheater) {
+  public void play() {
+    PlayerStrategyGameState winner = null;
+    while (winner == null && !cheater && !isEndOfGame) {
       winner = performRound();
     }
     if (cheater) {
-      throw new Exception("A player cheated!");
+      try {
+        throw new Exception("A player cheated!");
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
-    calculateScore((PlayerStrategyGameState) winner);
+    calculateScore(winner);
     scoreCalculated = true;
-
+    System.out.println(player1.score);
+    System.out.println(player2.score);
+    System.out.println(player3.score);
+    System.out.println(player4.score);
   }
 
   public List<Card> deal(PlayerStrategy player) {
@@ -76,40 +92,43 @@ public class Game {
     return playerHand;
   }
 
-
   /*
 
-////////// The scenario that a player wins and the draw pile is also empty is impossible because
-////////// in order for the draw pile size to change, a player must draw, and if they had to draw
-////////// then they could not play the last card in their hand.
+  ////////// The scenario that a player wins and the draw pile is also empty is impossible because
+  ////////// in order for the draw pile size to change, a player must draw, and if they had to draw
+  ////////// then they could not play the last card in their hand.
 
-   */
+     */
   // Returns the player that won
-  private PlayerStrategy performRound() {
+  private PlayerStrategyGameState performRound() {
     List<PlayerTurn> actions = new ArrayList<>();
     for (PlayerStrategyGameState player : playerList) {
       PlayerTurn turn = getPlayerTurn(player);
       actions.add(turn);
     }
     for (PlayerStrategyGameState player : playerList) {
-      player.getPlayerStrategy().processOpponentActions(actions);
-
+      if (!isEndOfGame) {
+        player.getPlayerStrategy().processOpponentActions(actions);
+      }
     }
     PlayerStrategyGameState possibleWinner;
     possibleWinner = checkEndOfGame();
     if (possibleWinner == null) {
       return null;
     } else {
-      return possibleWinner.getPlayerStrategy();
+      return possibleWinner;
     }
   }
 
   private PlayerTurn getPlayerTurn(PlayerStrategyGameState player) {
-    System.out.println("called");
     PlayerTurn turn = new PlayerTurn();
     turn.playerId = player.selfId;
     if (lastDeclaredSuit == null) {
       lastDeclaredSuit = discard.get(0).getSuit();
+    }
+    if (draw.size() == 0 || player.cardsInHand.size() == 0) {
+      checkEndOfGame();
+      return null;
     }
     if (player.getPlayerStrategy().shouldDrawCard(discard.get(0), lastDeclaredSuit)) {
       player.getPlayerStrategy().receiveCard(draw.get(0));
@@ -121,7 +140,6 @@ public class Game {
       Card cardPlayed = player.getPlayerStrategy().playCard();
       if (!isValidMove(cardPlayed, player)) {
         cheater = true;
-        System.out.println("was not valid");
         // A try-catch block in main should find if there is a cheater if we organize our functions
         // in this manner.
         return null;
@@ -129,19 +147,17 @@ public class Game {
       turn.playedCard = cardPlayed;
       player.cardsInHand.remove(cardPlayed);
       if (cardPlayed.getRank() == Card.Rank.EIGHT) {
-        Card.Suit declared = player.getPlayerStrategy().declareSuit();
-        turn.declaredSuit = declared;
+        turn.declaredSuit = player.getPlayerStrategy().declareSuit();
       }
     }
-    System.out.println(turn + "asdf");
     return turn;
   }
 
   boolean isValidMove(Card cardPlayed, PlayerStrategyGameState player) {
-    if (    (discard.get(0).getSuit().equals(cardPlayed.getSuit())
-          || discard.get(0).getRank().equals(cardPlayed.getRank())
-          || cardPlayed.getRank().equals(Card.Rank.EIGHT))
-          && player.cardsInHand.contains(cardPlayed)) {
+    if ((discard.get(0).getSuit().equals(cardPlayed.getSuit())
+            || discard.get(0).getRank().equals(cardPlayed.getRank())
+            || cardPlayed.getRank().equals(Card.Rank.EIGHT))
+        && player.cardsInHand.contains(cardPlayed)) {
       return true;
     } else {
       System.out.println("A player cheated! Player " + player.selfId + " broke the rules.");
@@ -190,39 +206,54 @@ public class Game {
   List<Card> getDeck() {
     return deck;
   }
+
   List<Card> getPlayer1CardsInHand() {
     return player1.cardsInHand;
   }
+
   List<Card> getPlayer2CardsInHand() {
     return player2.cardsInHand;
   }
-  List<Card> getPlayer3CardsInHand() {
-    return player3.cardsInHand;
-  }
-  List<Card> getPlayer4CardsInHand() {
-    return player4.cardsInHand;
-  }
+
   List<PlayerStrategyGameState> getPlayerList() {
     return playerList;
   }
+
   int getPlayer1Score() {
     return player1.score;
   }
+
+  int getPlayer2Score() {
+    return player2.score;
+  }
+
+  int getPlayer3Score() {
+    return player3.score;
+  }
+
+  int getPlayer4Score() {
+    return player4.score;
+  }
+
   void clearPlayer1CardsInHand() {
     player1.cardsInHand.clear();
   }
+
   void setPlayer1CardsInHand(List<Card> cards) {
     player1.cardsInHand.clear();
     player1.cardsInHand.addAll(cards);
   }
+
   void setPlayer2CardsInHand(List<Card> cards) {
     player2.cardsInHand.clear();
     player2.cardsInHand.addAll(cards);
   }
+
   void setPlayer3CardsInHand(List<Card> cards) {
     player3.cardsInHand.clear();
     player3.cardsInHand.addAll(cards);
   }
+
   void setPlayer4CardsInHand(List<Card> cards) {
     player4.cardsInHand.clear();
     player4.cardsInHand.addAll(cards);

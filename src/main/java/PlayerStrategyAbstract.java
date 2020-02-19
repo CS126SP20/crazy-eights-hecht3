@@ -28,25 +28,21 @@ public abstract class PlayerStrategyAbstract implements PlayerStrategy {
 
   /**
    * Gives the player their assigned id, as well as a list of the opponents' assigned ids.
-   * <p>
-   * This method will be called by the game engine once at the very beginning (before any games
+   *
+   * <p>This method will be called by the game engine once at the very beginning (before any games
    * are started), to allow the player to set up any initial state.
    *
-   * @param playerId    The id for this player, assigned by the game engine
+   * @param playerId The id for this player, assigned by the game engine
    * @param opponentIds A list of ids for this player's opponents
    */
   public void init(int playerId, List<Integer> opponentIds) {
-
-
-    //reset();
-
-    for (Integer id : opponentIds) {
-      if (NUM_PLAYERS - id == playerId + 1) {
-        playerAfterId = id;
-      } else if (NUM_PLAYERS - id == playerId - 1) {
-        playerBeforeId = id;
+    for (Integer oppId : opponentIds) {
+      if (oppId == playerId + 1 || oppId == playerId - NUM_PLAYERS + 1) {
+        playerAfterId = oppId;
+      } else if (oppId == playerId - 1 || oppId == NUM_PLAYERS - playerId + 1) {
+        playerBeforeId = oppId;
       } else {
-        playerAcrossId = id;
+        playerAcrossId = oppId;
       }
     }
     playerSelfId = playerId;
@@ -65,16 +61,16 @@ public abstract class PlayerStrategyAbstract implements PlayerStrategy {
   }
 
   /**
-   * Called to ask whether the player wants to draw this turn. Gives this player the top card of
-   * the discard pile at the beginning of their turn, as well as an optional suit for the pile in
-   * case a "8" was played, and the suit was changed.
-   * <p>
-   * By having this return true, the game engine will then call receiveCard() for this player.
+   * Called to ask whether the player wants to draw this turn. Gives this player the top card of the
+   * discard pile at the beginning of their turn, as well as an optional suit for the pile in case a
+   * "8" was played, and the suit was changed.
+   *
+   * <p>By having this return true, the game engine will then call receiveCard() for this player.
    * Otherwise, playCard() will be called.
    *
    * @param topPileCard The card currently at the top of the pile
-   * @param changedSuit The suit that the pile was changed to as the result of an "8" being
-   *                    played. Will be null if no "8" was played.
+   * @param changedSuit The suit that the pile was changed to as the result of an "8" being played.
+   *     Will be null if no "8" was played.
    * @return whether or not the player wants to draw
    */
   public abstract boolean shouldDrawCard(Card topPileCard, Card.Suit changedSuit);
@@ -91,18 +87,18 @@ public abstract class PlayerStrategyAbstract implements PlayerStrategy {
   /**
    * Called when this player is ready to play a card (will not be called if this player drew on
    * their turn).
-   * <p>
-   * This will end this player's turn.
+   *
+   * <p>This will end this player's turn.
    *
    * @return The card this player wishes to put on top of the pile
    */
   public abstract Card playCard();
 
   /**
-   * Called if this player decided to play a "8" card to ask the player what suit they would like
-   * to declare.
-   * <p>
-   * This player should then return the Card.Suit enum that it wishes to set for the discard
+   * Called if this player decided to play a "8" card to ask the player what suit they would like to
+   * declare.
+   *
+   * <p>This player should then return the Card.Suit enum that it wishes to set for the discard
    * pile.
    */
   public abstract Card.Suit declareSuit();
@@ -115,7 +111,10 @@ public abstract class PlayerStrategyAbstract implements PlayerStrategy {
    */
   public void processOpponentActions(List<PlayerTurn> opponentActions) {
     for (PlayerTurn turn : opponentActions) {
-      if (turn.playerId == playerBeforeId && turn.drewACard) {
+      if (playerAfterId == null) {
+        break;
+      }
+      if ((turn.playerId == playerBeforeId) && turn.drewACard) {
         playerBeforeDrewCard = true;
       } else if (turn.playerId == playerBeforeId) {
         playerBeforePlayedCards.add(turn.playedCard);
@@ -123,7 +122,7 @@ public abstract class PlayerStrategyAbstract implements PlayerStrategy {
           playerBeforeDeclaredSuit = turn.declaredSuit;
         }
       }
-      if (turn.playerId == playerAfterId && turn.drewACard) {
+      if ((turn.playerId == playerAfterId) && turn.drewACard) {
         playerAfterDrewCard = true;
       } else if (turn.playerId == playerAfterId) {
         playerAfterPlayedCards.add(turn.playedCard);
@@ -132,7 +131,7 @@ public abstract class PlayerStrategyAbstract implements PlayerStrategy {
         }
       }
 
-      if (turn.playerId == playerAcrossId && turn.drewACard) {
+      if ((turn.playerId == playerAcrossId) && turn.drewACard) {
         playerAcrossDrewCard = true;
       } else if (turn.playerId == playerAcrossId) {
         playerAcrossPlayedCards.add(turn.playedCard);
@@ -142,7 +141,6 @@ public abstract class PlayerStrategyAbstract implements PlayerStrategy {
       }
     }
   }
-
 
   List<Card> getPlayerBeforePlayedCards() {
     return playerBeforePlayedCards;
@@ -180,10 +178,7 @@ public abstract class PlayerStrategyAbstract implements PlayerStrategy {
     return playerAcrossDeclaredSuit;
   }
 
-
-  /**
-   * Called before a game begins, to allow for resetting any state between games.
-   */
+  /** Called before a game begins, to allow for resetting any state between games. */
   public void reset() {
     playerAfterId = null;
     playerBeforeId = null;
@@ -195,6 +190,6 @@ public abstract class PlayerStrategyAbstract implements PlayerStrategy {
     playerBeforeDeclaredSuit = null;
     playerAfterDeclaredSuit = null;
     playerAcrossDeclaredSuit = null;
-    cardsInHand.clear();
+    cardsInHand = new ArrayList<>();
   }
 }

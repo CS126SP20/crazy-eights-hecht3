@@ -2,7 +2,7 @@ import student.crazyeights.Card;
 
 import java.util.*;
 
-public class PlayerStrategy1 extends PlayerStrategyAbstract{
+public class PlayerStrategy1 extends PlayerStrategyAbstract {
   @Override
   public boolean shouldDrawCard(Card topPileCard, Card.Suit changedSuit) {
     topCard = topPileCard;
@@ -10,6 +10,7 @@ public class PlayerStrategy1 extends PlayerStrategyAbstract{
     for (Card card : cardsInHand) {
       if (card.getSuit().equals(changedSuit) || card.getRank().equals(topPileCard.getRank())) {
         drawCard = false;
+        break;
       }
     }
     return drawCard;
@@ -17,8 +18,8 @@ public class PlayerStrategy1 extends PlayerStrategyAbstract{
 
   @Override
   public Card playCard() {
-    Map<Card.Suit, Integer> suitsPlayed = new HashMap<Card.Suit, Integer>();
-    Map<Card.Rank, Integer> ranksPlayed = new HashMap<Card.Rank, Integer>();
+    Map<Card.Suit, Integer> suitsPlayed = new HashMap<>();
+    Map<Card.Rank, Integer> ranksPlayed = new HashMap<>();
 
     for (Card.Suit suit : Card.Suit.values()) {
       suitsPlayed.put(suit, 0);
@@ -66,16 +67,17 @@ public class PlayerStrategy1 extends PlayerStrategyAbstract{
       if (card.getRank().equals(Card.Rank.EIGHT)) {
         rank1.add(card);
         break;
-      } else if (card.getSuit().equals(idealSuit) && card.getRank().equals(idealRank)
-              && (topCard.getSuit().equals(card.getSuit())
+      } else if (card.getSuit().equals(idealSuit)
+          && card.getRank().equals(idealRank)
+          && (topCard.getSuit().equals(card.getSuit())
               || topCard.getRank().equals(card.getRank()))) {
         rank2.add(card);
       } else if ((card.getSuit().equals(idealSuit) || card.getRank().equals(idealRank))
-              && (topCard.getSuit().equals(card.getSuit())
+          && (topCard.getSuit().equals(card.getSuit())
               || topCard.getRank().equals(card.getRank()))) {
         rank3.add(card);
       } else if (topCard.getSuit().equals(card.getSuit())
-              || topCard.getRank().equals(card.getRank())) {
+          || topCard.getRank().equals(card.getRank())) {
         rank4.add(card);
       }
     }

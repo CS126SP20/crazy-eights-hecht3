@@ -10,7 +10,7 @@ public class PlayerStrategy2Test {
   PlayerStrategy2 player1;
 
   @Before
-  public void setUp() { ;
+  public void setUp() {
     List<Integer> opponentIds = new ArrayList<>(Arrays.asList(2, 3, 4));
     player1 = new PlayerStrategy2();
     player1.init(1, Arrays.asList(2, 3, 4));
