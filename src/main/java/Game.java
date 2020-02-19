@@ -25,6 +25,20 @@ public class Game {
   private PlayerStrategyGameState player4;
   List<PlayerStrategyGameState> playerList = new ArrayList<>();
 
+  /**
+   * The constructor for the Game class. Takes in four implementations of PlayerStrategies and
+   * initializes them for a new game. Also calls on the deal() method to give the players their]
+   * initial hands. Also makes the PlayerStrategy instances into PlayerStrategyGameState instances
+   * in order to store variables specifically associated with each player. The reason this extra
+   * class was created is Game is not supposed to have any access to the internal state of the
+   * PlayerStrategies but still needs to store information associated with each PlayerStrategy
+   * instance.
+   *
+   * @param player1Init the PlayerStrategy for player1
+   * @param player2Init the PlayerStrategy for player2
+   * @param player3Init the PlayerStrategy for player3
+   * @param player4Init the PlayerStrategy for player4
+   */
   public Game(
       PlayerStrategy player1Init,
       PlayerStrategy player2Init,
@@ -59,6 +73,30 @@ public class Game {
     draw.remove(draw.get(0));
   }
 
+  /**
+   * Deals cards from deck for a given player.
+   *
+   * @param player the player that the hand is being dealt for
+   * @return the hand dealt for a player
+   */
+  public List<Card> deal(PlayerStrategy player) {
+    List<Card> playerHand = new ArrayList<>();
+    for (int i = 0; i < DEAL_SIZE; i++) {
+      // We can just take the card in position 0 of the deck to simulate taking the top card off
+      // of a deck. The deck was already shuffled in the constructor.
+      Card toDeal = deck.get(0);
+      playerHand.add(toDeal);
+      deck.remove(toDeal);
+    }
+    player.receiveInitialCards(playerHand);
+    return playerHand;
+  }
+
+  /**
+   * Continues gameplay until a winner is found or checkEndOfGame has figured out that it is the end
+   * of the game. Loops performRound() until isEndOfGame is true. Also throws an exception if
+   * a player makes an invalid move i.e. cheating occurs.
+   */
   public void play() {
     PlayerStrategyGameState winner = null;
     while (winner == null && !cheater && !isEndOfGame) {
@@ -79,27 +117,11 @@ public class Game {
     System.out.println(player4.score);
   }
 
-  public List<Card> deal(PlayerStrategy player) {
-    List<Card> playerHand = new ArrayList<>();
-    for (int i = 0; i < DEAL_SIZE; i++) {
-      // We can just take the card in position 0 of the deck to simulate taking the top card off
-      // of a deck. The deck was already shuffled in the constructor.
-      Card toDeal = deck.get(0);
-      playerHand.add(toDeal);
-      deck.remove(toDeal);
-    }
-    player.receiveInitialCards(playerHand);
-    return playerHand;
-  }
-
-  /*
-
-  ////////// The scenario that a player wins and the draw pile is also empty is impossible because
-  ////////// in order for the draw pile size to change, a player must draw, and if they had to draw
-  ////////// then they could not play the last card in their hand.
-
-     */
-  // Returns the player that won
+  /**
+   * Manages the helper functions necessary for performing a round of moves.
+   *
+   * @return the player that has won the game or null if no player has won.
+   */
   private PlayerStrategyGameState performRound() {
     List<PlayerTurn> actions = new ArrayList<>();
     for (PlayerStrategyGameState player : playerList) {
@@ -120,6 +142,13 @@ public class Game {
     }
   }
 
+  /**
+   * Creates the playerTurn object so that the PlayerStrategies can process the last set of moves
+   * that occurred. Is called by the performRound() method for each player in playerList.
+   *
+   * @param player the player that is making a move.
+   * @return the PlayerTurn object with the relevant information for this move.
+   */
   private PlayerTurn getPlayerTurn(PlayerStrategyGameState player) {
     PlayerTurn turn = new PlayerTurn();
     turn.playerId = player.selfId;
@@ -153,6 +182,15 @@ public class Game {
     return turn;
   }
 
+  /**
+   * Checks to see if a player has cheated. If the player has not made a valid move, that is
+   * considered cheating and the tournament and game end. An exception is thrown in the case of
+   * cheating in the play() method. The scenario that a player wins and the draw pile is empty is
+   * impossible because if a player draws that counts as their turn.
+   *
+   * @param cardPlayed the card that was played
+   * @param player the player that played the card
+   */
   boolean isValidMove(Card cardPlayed, PlayerStrategyGameState player) {
     if ((discard.get(0).getSuit().equals(cardPlayed.getSuit())
             || discard.get(0).getRank().equals(cardPlayed.getRank())
@@ -165,6 +203,14 @@ public class Game {
     }
   }
 
+  /**
+   * Calculates the score of each player. Is called once the game is over. In the case that game is
+   * over because the draw pile is empty, this method loops through the playerList and sums up all
+   * the point values of the cards that the opposing players have.
+   *
+   * @param winner the player (if any) that has emptied their hand. Is null if no player has emptied
+   *               its hand.
+   */
   void calculateScore(PlayerStrategyGameState winner) {
     if (winner == null) {
       for (PlayerStrategyGameState player : playerList) {
@@ -187,6 +233,13 @@ public class Game {
     }
   }
 
+  /**
+   * Checks to see if the draw pile is empty or any player has emptied their hand, in which case
+   * the game is over and scores need to be calculated.
+   *
+   * @return the player (if any) that emptied their hand. If the game has ended because the draw
+   *         pile is empty, this method returns null.
+   */
   PlayerStrategyGameState checkEndOfGame() {
     if (draw.size() == 0) {
       isEndOfGame = true;
@@ -203,6 +256,10 @@ public class Game {
     return null;
   }
 
+  /**
+   * The following are methods that were used for testing. They provide no functional purpose to
+   * the Game class, main class, or any of the PlayerStrategy implementations.
+   */
   List<Card> getDeck() {
     return deck;
   }

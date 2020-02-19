@@ -4,6 +4,14 @@ import java.util.*;
 
 public class Main {
   static final int WINNING_SCORE = 200;
+
+  /**
+   * The main method for the program. Orchestrates a tournament which ends when a player reaches
+   * the winning score threshold, which is 200 as per the assignment documentation. Catches an
+   * exception from play() which is thrown in the event that a player cheats.
+   *
+   * @param args an array of commandline arguments standard in an java main.
+   */
   public static void main(String[] args) {
     PlayerStrategy player1 = new PlayerStrategy1();
     PlayerStrategy player2 = new PlayerStrategy1();
