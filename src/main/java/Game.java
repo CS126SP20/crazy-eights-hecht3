@@ -83,7 +83,7 @@ public class Game {
    * @param player the player that the hand is being dealt for
    * @return the hand dealt for a player
    */
-  public List<Card> deal(PlayerStrategy player) {
+  List<Card> deal(PlayerStrategy player) {
     List<Card> playerHand = new ArrayList<>();
     for (int i = 0; i < DEAL_SIZE; i++) {
       // We can just take the card in position 0 of the deck to simulate taking the top card off
@@ -115,10 +115,9 @@ public class Game {
     }
     calculateScore(winner);
     scoreCalculated = true;
-    System.out.println(player1.score);
-    System.out.println(player2.score);
-    System.out.println(player3.score);
-    System.out.println(player4.score);
+    for (PlayerStrategyGameState player : playerList) {
+      System.out.println(player.score);
+    }
   }
 
   /**

@@ -110,4 +110,13 @@ public class GameTest {
     assertEquals(3, game.getPlayer1Score());
   }
 
+  @Test
+  public void checkPlayScoreCalculated() {
+    game.setPlayer1CardsInHand(new ArrayList<>());
+    game.setPlayer2CardsInHand(Arrays.asList(new Card(Card.Suit.SPADES, Card.Rank.ACE)));
+    game.setPlayer3CardsInHand(Arrays.asList(new Card(Card.Suit.CLUBS, Card.Rank.ACE)));
+    game.setPlayer4CardsInHand(Arrays.asList(new Card(Card.Suit.HEARTS, Card.Rank.ACE)));
+    game.play();
+    assertTrue(game.scoreCalculated);
+  }
 }
